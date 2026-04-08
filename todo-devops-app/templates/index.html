@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pulse Tasks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-top: #fff6df;
+            --bg-bottom: #d8f7ef;
+            --ink: #1b2a2f;
+            --muted: #5a6a6f;
+            --card: rgba(255, 255, 255, 0.78);
+            --line: rgba(27, 42, 47, 0.12);
+            --accent: #e56b2f;
+            --accent-deep: #c6521b;
+            --mint: #26a17b;
+            --danger: #d64545;
+            --glow: 0 24px 60px rgba(59, 91, 97, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Manrope", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(229, 107, 47, 0.18), transparent 45%),
+                radial-gradient(circle at 100% 100%, rgba(38, 161, 123, 0.2), transparent 45%),
+                linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .shell {
+            width: min(880px, 100%);
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: var(--glow);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+            animation: rise-in 520ms ease-out;
+        }
+
+        .hero {
+            padding: 36px 34px 18px;
+            border-bottom: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.25));
+        }
+
+        .tag {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent-deep);
+            background: rgba(229, 107, 47, 0.12);
+            border: 1px solid rgba(229, 107, 47, 0.26);
+            border-radius: 999px;
+            padding: 8px 12px;
+        }
+
+        h1 {
+            margin: 14px 0 8px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+            line-height: 1.08;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.99rem;
+        }
+
+        .content {
+            padding: 24px 22px 30px;
+        }
+
+        form.add-task {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px 14px;
+            font-size: 0.97rem;
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+            transition: border-color 140ms ease, box-shadow 140ms ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--mint);
+            box-shadow: 0 0 0 3px rgba(38, 161, 123, 0.17);
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: "Manrope", sans-serif;
+            transition: transform 120ms ease, filter 120ms ease;
+        }
+
+        .btn:active {
+            transform: translateY(1px) scale(0.99);
+        }
+
+        .btn-add {
+            color: white;
+            background: linear-gradient(140deg, var(--accent), var(--accent-deep));
+            box-shadow: 0 10px 20px rgba(229, 107, 47, 0.25);
+        }
+
+        .btn-add:hover {
+            filter: brightness(1.04);
+        }
+
+        .task-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 13px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            animation: reveal 260ms ease both;
+        }
+
+        .task-main {
+            display: grid;
+            gap: 4px;
+        }
+
+        .task-title {
+            margin: 0;
+            font-weight: 700;
+            font-size: 0.99rem;
+        }
+
+        .task-time {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.83rem;
+        }
+
+        .btn-delete {
+            color: white;
+            background: var(--danger);
+            font-size: 0.85rem;
+            border-radius: 10px;
+            padding: 8px 10px;
+        }
+
+        .empty {
+            border: 1px dashed var(--line);
+            border-radius: 15px;
+            padding: 18px;
+            text-align: center;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes rise-in {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes reveal {
+            from {
+                transform: scale(0.98);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero {
+                padding: 26px 18px 14px;
+            }
+
+            .content {
+                padding: 18px 14px 20px;
+            }
+
+            form.add-task {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+
+            .task-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <section class="hero">
+            <span class="tag">SEA Lab DevOps Demo</span>
+            <h1>Pulse Tasks</h1>
+            <p class="subtitle">Track what matters. Fast add, clean view, one-click remove.</p>
+        </section>
+
+        <section class="content">
+            <form class="add-task" method="POST" action="/tasks">
+                <input
+                    type="text"
+                    name="task"
+                    placeholder="Enter a task to get started"
+                    maxlength="120"
+                    required
+                />
+                <button class="btn btn-add" type="submit">Add Task</button>
+            </form>
+
+            {% if tasks %}
+                <ul class="task-list">
+                    {% for task in tasks %}
+                        <li class="task-item">
+                            <div class="task-main">
+                                <p class="task-title">{{ task.title }}</p>
+                                <p class="task-time">Added on {{ task.created_at }}</p>
+                            </div>
+                            <form method="POST" action="/tasks/{{ task.id }}/delete">
+                                <button class="btn btn-delete" type="submit" aria-label="Delete task {{ task.title }}">Delete</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty">No tasks yet. Add your first task above.</div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
